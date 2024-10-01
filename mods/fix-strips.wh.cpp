@@ -2,7 +2,7 @@
 // @id              fix-strips
 // @name            FixStrips WH Port
 // @description     Port of the fixstrips AHK script that fixes some classic theme issues with Explorer7
-// @version         1.0
+// @version         1.1
 // @author          OliveIsTyping
 // @github          https://github.com/OliviaIsTyping
 // @include         explorer.exe
@@ -58,6 +58,20 @@ HWND WINAPI CreateWindowExW_Hook(DWORD dwExStyle,LPCWSTR lpClassName,LPCWSTR lpW
 // The mod is being initialized, load settings, hook functions, and do other initialization stuff if required.
 BOOL Wh_ModInit() {
     Wh_Log(L"Init");
+
+    HWND hShell_TrayWnd = FindWindowEx(NULL,NULL,L"Shell_TrayWnd", NULL);
+
+    if (hShell_TrayWnd)
+
+    {
+
+        long dwStyle = 0;
+        dwStyle = GetWindowLongW(hShell_TrayWnd,GWL_STYLE);
+        dwStyle |= WS_DLGFRAME;
+        SetWindowLongW(hShell_TrayWnd,GWL_STYLE,dwStyle);
+        dwStyle &= ~WS_DLGFRAME;
+        SetWindowLongW(hShell_TrayWnd, GWL_STYLE, dwStyle);
+    }
 
     Wh_SetFunctionHook((void*)CreateWindowExW,
                        (void*)CreateWindowExW_Hook,
